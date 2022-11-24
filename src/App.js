@@ -1,4 +1,5 @@
 import './App.css';
+import { QrReader } from 'react-qr-reader';
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label, Input, FormText, Button } from 'reactstrap';
 
@@ -6,6 +7,8 @@ function App() {
 
   const [selectedImage, setSelectedImage] = useState([]);
   const [previewImage, setPreviewImage] = useState([]);
+
+  const [qrData, setQrData] = useState('');
 
   useEffect(() => {
     const changePreviewImage = async () => {
@@ -31,6 +34,7 @@ function App() {
     };
 
     changePreviewImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedImage]);
 
   const changeHandler = (e) => {   
@@ -52,6 +56,29 @@ function App() {
   return (
     <div className="App py-5">
       <Container className='text-start'>
+
+        <Row className='justify-content-center'>
+          <Col xs='6'>
+            <QrReader
+              constraints={{facingMode: 'environment'}}
+              onResult={(result, error) => {
+                if (!!result) {
+                  setQrData(result?.text);
+                }
+              }}
+              style={{ width: '100%' }}
+            />
+          </Col>
+        </Row>
+
+        {qrData && (
+          <Row className='my-5 p-3 bg-light'>
+            <Col>
+                <p className='mb-0 text-center'>{qrData}</p>
+            </Col>
+          </Row>
+        )}
+
         <Row className='justify-content-center'>
           <Col xs='12' md='8' className='text-center'>
 
