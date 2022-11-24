@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Container, Row, Col, Form, FormGroup, Label, Input, FormText, Button } from 'reactstrap';
 
 function App() {
 
@@ -9,8 +9,8 @@ function App() {
 
   useEffect(() => {
     const changePreviewImage = async () => {
-      if (!selectedImage) {
-        setPreviewImage(undefined);
+      if (!selectedImage.length) {
+        setPreviewImage([]);
         return;
       }
   
@@ -27,7 +27,7 @@ function App() {
         initialResponse.push(await toBase64(image));
       }
   
-      setPreviewImage(initialResponse);
+      setPreviewImage([...previewImage, ...initialResponse]);
     };
 
     changePreviewImage();
@@ -39,13 +39,26 @@ function App() {
     }
   }
 
+  const addImageClick = () => {
+    document.getElementById('uploadFile').value = null;
+    document.getElementById('uploadFile').click();
+  }
+
+  const removeAllImages = () => {
+    setPreviewImage([]);
+    setSelectedImage([]);
+  }
+
   return (
     <div className="App py-5">
       <Container className='text-start'>
         <Row className='justify-content-center'>
-          <Col xs='12' md='8'>
+          <Col xs='12' md='8' className='text-center'>
 
-            <Form>
+            <Button color='primary' onClick={addImageClick} className='me-1'>Add</Button>
+            <Button onClick={removeAllImages} color='danger' outline>Remove all images</Button>
+
+            <Form className='d-none'>
               <FormGroup>
                 <Label for="uploadFile">
                   File
@@ -69,8 +82,8 @@ function App() {
         </Row>
 
         {previewImage && (
-          <Row className='my-3'>
-            {previewImage.map((o, i) => <Col key={i} xs='4'><img src={o} className='mw-100' alt='' /></Col>)}
+          <Row className='my-5'>
+            {previewImage.map((o, i) => <Col key={i} xs='4' className='mt-4'><img src={o} className='mw-100' alt='' /></Col>)}
           </Row>
         )}
       </Container>
