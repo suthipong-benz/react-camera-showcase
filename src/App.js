@@ -4,28 +4,39 @@ import { Container, Row, Col, Form, FormGroup, Label, Input, FormText } from 're
 
 function App() {
 
-  const [selectedImage, setSelectedImage] = useState();
-  const [previewImage, setPreviewImage] = useState();
+  const [selectedImage, setSelectedImage] = useState([]);
+  const [previewImage, setPreviewImage] = useState([]);
 
   useEffect(() => {
-    if (!selectedImage) {
-      setPreviewImage(undefined);
-      return;
-    }
+    const changePreviewImage = async () => {
+      if (!selectedImage) {
+        setPreviewImage(undefined);
+        return;
+      }
+  
+      const toBase64 = file => new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.readAsDataURL(file);
+        r.onload = () => resolve(r.result);
+        r.onerror = error => reject(error);
+      });
+  
+      const initialResponse = [];
+  
+      for (let image of selectedImage) {
+        initialResponse.push(await toBase64(image));
+      }
+  
+      setPreviewImage(initialResponse);
+    };
 
-    const ou = URL.createObjectURL(selectedImage)
-    setPreviewImage(ou);
-
-    return () => URL.revokeObjectURL(ou);
+    changePreviewImage();
   }, [selectedImage]);
 
-  const changeHandler = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedImage(undefined);
-      return;
+  const changeHandler = (e) => {   
+    if (e.target.files.length) {
+      setSelectedImage(e.target.files);
     }
-    
-    setSelectedImage(e.target.files[0]);
   }
 
   return (
@@ -33,12 +44,6 @@ function App() {
       <Container className='text-start'>
         <Row className='justify-content-center'>
           <Col xs='12' md='8'>
-
-            {previewImage && (
-              <div className='my-3'>
-                <img src={previewImage} className='mw-100' alt='' />
-              </div>
-            )}
 
             <Form>
               <FormGroup>
@@ -50,17 +55,24 @@ function App() {
                   id="uploadFile"
                   name="file"
                   type="file"
-                  accept="image/*"
-                  capture
+                  accept="image/*, capture=camera"
                   onChange={changeHandler}
+                  multiple
                 />
                 <FormText>
                   This is some placeholder block-level help text for the above input. It‘s a bit lighter and easily wraps to a new line.
                 </FormText>
               </FormGroup>
             </Form>
+
           </Col>
         </Row>
+
+        {previewImage && (
+          <Row className='my-3'>
+            {previewImage.map((o, i) => <Col key={i} xs='4'><img src={o} className='mw-100' alt='' /></Col>)}
+          </Row>
+        )}
       </Container>
     </div>
   );
