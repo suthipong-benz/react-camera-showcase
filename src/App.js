@@ -72,14 +72,14 @@ function App() {
         </Row>
 
         {qrData && (
-          <Row className='my-5 p-3 bg-light'>
+          <Row className='mt-4 p-3 bg-light'>
             <Col>
                 <p className='mb-0 text-center'>{qrData}</p>
             </Col>
           </Row>
         )}
 
-        <Row className='justify-content-center'>
+        <Row className='justify-content-center mt-5'>
           <Col xs='12' md='8' className='text-center'>
 
             <Button color='primary' onClick={addImageClick} className='me-1'>Add</Button>
