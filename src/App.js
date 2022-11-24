@@ -36,7 +36,7 @@ function App() {
 
             {previewImage && (
               <div className='my-3'>
-                <img src={previewImage} alt='' />
+                <img src={previewImage} className='mw-100' alt='' />
               </div>
             )}
 
