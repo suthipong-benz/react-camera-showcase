@@ -97,7 +97,6 @@ function App() {
                   type="file"
                   accept="image/*, capture=camera"
                   onChange={changeHandler}
-                  multiple
                 />
                 <FormText>
                   This is some placeholder block-level help text for the above input. It‘s a bit lighter and easily wraps to a new line.
